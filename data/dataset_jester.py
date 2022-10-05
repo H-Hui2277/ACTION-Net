@@ -21,11 +21,12 @@ from copy import copy
 
 
 # 加载图片路径
-'''
+
+def load_video(annot_path, mode):
+    """
     @annot_path 数据集路径
     @mode 数据集模式 train / test / val
-'''
-def load_video(annot_path, mode):
+    """
     # mode: train, val, test
     csv_file = os.path.join(annot_path, '{}.pkl'.format(mode))
     annot_df = pd.read_pickle(csv_file)
@@ -56,7 +57,7 @@ class dataset_video(Dataset):
         rgb_name = self.rgb_samples[idx]
         label = self.labels[idx]
         indices = [i for i in range(len(rgb_name))]
-        # TODO temporal_transform 猜测是选取帧的方法
+        # TODO temporal_transform 是随机选取帧的方法
         selected_indice = self.temporal_transform(indices)
         clip_frames = []
         for i, frame_name_i in enumerate(selected_indice):
