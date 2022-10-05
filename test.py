@@ -117,13 +117,16 @@ def inference(model, val_dataloader):
 
     end = time.time()
     with torch.no_grad():
+        # TODO 这个 tqdm 方法需要研究一下
         for step, inputs in enumerate(tqdm(val_dataloader)):
             data_time.update(time.time() - end)
             if args.dataset == 'EgoGesture':
+                # egoGesture 数据集中存在深度信息，但是好像没有使用过
                 rgb, depth, labels = inputs[0], inputs[1], inputs[2]
                 rgb = rgb.to(device, non_blocking=True).float()
                 depth = depth.to(device, non_blocking=True).float()
                 nb, n_clip, nt, nc, h, w = rgb.size()
+                # TODO 需要研究一下这个变换的意义
                 rgb = rgb.view(-1, nt//args.test_crops, nc, h, w) # n_clip * nb (1) * crops, T, C, H, W
                 outputs = model(rgb)
                 outputs = outputs.view(nb, n_clip*args.test_crops, -1)
